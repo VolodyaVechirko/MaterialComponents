@@ -7,4 +7,8 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorDark">#222222</color>
     <color name="colorDarkPrimaryDark">#000000</color>
+
+    <color name="foregroundViewColor">#663F51B5</color>
+    <color name="background_image_photo_tint">#4f808080</color>
+    <color name="album_image_photo_tint">#2f505050</color>
 </resources>
