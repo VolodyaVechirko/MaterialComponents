@@ -1,23 +1,24 @@
 package com.vvechirko.testapp.transition
 
-import android.annotation.TargetApi
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
-import android.transition.Transition
+import android.support.annotation.RequiresApi
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.vvechirko.testapp.R
+import com.vvechirko.testapp.onEnd
+import com.vvechirko.testapp.onPreDraw
 import kotlinx.android.synthetic.main.fragment_details.*
 import java.lang.Exception
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class DetailsFragment : Fragment() {
 
     companion object {
@@ -40,22 +41,24 @@ class DetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        log("onCreate")
         startingPosition = arguments?.getInt(ARG_STARTING_ALBUM_IMAGE_POSITION) ?: 0
         albumPosition = arguments?.getInt(ARG_ALBUM_IMAGE_POSITION) ?: 0
         isTransitioning = savedInstanceState == null && startingPosition == albumPosition
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        log("onCreateView")
         return inflater.inflate(R.layout.fragment_details, container, false)
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        log("onViewCreated")
 
         val albumItem = Interactor.getItems().get(albumPosition)
 
         detailsAlbumTitle.text = albumItem.title
+        detailsAlbumImage.setHasTransientState(false)
         detailsAlbumImage.transitionName = albumItem.title
 
         val albumImageRequest = Picasso.get().load(albumItem.albumImage)
@@ -66,21 +69,11 @@ class DetailsFragment : Fragment() {
             backgroundImageRequest.noFade()
             detailsBackgroundImage.setAlpha(0f)
 
-            activity?.window?.sharedElementEnterTransition?.addListener(object : Transition.TransitionListener {
-                override fun onTransitionEnd(transition: Transition?) {
-                    detailsBackgroundImage?.let {
-                        it.animate().setDuration(backgroundImageFadeMillis).alpha(1f)
-                    }
-                }
-
-                override fun onTransitionResume(transition: Transition?) {}
-
-                override fun onTransitionPause(transition: Transition?) {}
-
-                override fun onTransitionCancel(transition: Transition?) {}
-
-                override fun onTransitionStart(transition: Transition?) {}
-            })
+            activity?.window?.sharedElementEnterTransition?.onEnd {
+                log("onTransitionEnd")
+                detailsBackgroundImage.animate()
+                        .setDuration(backgroundImageFadeMillis).alpha(1f)
+            }
         }
 
         albumImageRequest.into(detailsAlbumImage, imageCallback)
@@ -99,14 +92,11 @@ class DetailsFragment : Fragment() {
 
     override fun startPostponedEnterTransition() {
 //        super.startPostponedEnterTransition()
+        log("startPostponedEnterTransition")
         if (albumPosition == startingPosition) {
-            detailsAlbumImage.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-                override fun onPreDraw(): Boolean {
-                    detailsAlbumImage.viewTreeObserver.removeOnPreDrawListener(this)
-                    activity?.startPostponedEnterTransition()
-                    return true
-                }
-            })
+            detailsAlbumImage.onPreDraw {
+                activity?.startPostponedEnterTransition()
+            }
         }
     }
 
@@ -128,4 +118,6 @@ class DetailsFragment : Fragment() {
         container.getHitRect(containerBounds)
         return view.getLocalVisibleRect(containerBounds)
     }
+
+    private fun log(msg: String) = Log.d("MT_DetailsFragment", msg)
 }

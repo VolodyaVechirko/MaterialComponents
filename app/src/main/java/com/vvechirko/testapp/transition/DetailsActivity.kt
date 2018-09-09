@@ -1,10 +1,12 @@
 package com.vvechirko.testapp.transition
 
-import android.annotation.TargetApi
 import android.app.SharedElementCallback
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
+import android.transition.TransitionInflater
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +19,7 @@ import com.vvechirko.testapp.transition.MusicActivity.Companion.EXTRA_CURRENT_AL
 import com.vvechirko.testapp.transition.MusicActivity.Companion.EXTRA_STARTING_ALBUM_POSITION
 import kotlinx.android.synthetic.main.activity_details.*
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class DetailsActivity : AppCompatActivity() {
 
     companion object {
@@ -32,10 +34,12 @@ class DetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
+        setupWindowAnimations()
+        log("onCreate")
         postponeEnterTransition()
         setEnterSharedElementCallback(sharedElementCallback)
 
-        startingPosition = getIntent().getIntExtra(EXTRA_STARTING_ALBUM_POSITION, 0)
+        startingPosition = intent.getIntExtra(EXTRA_STARTING_ALBUM_POSITION, 0)
         if (savedInstanceState == null) {
             currentPosition = startingPosition
         } else {
@@ -53,8 +57,16 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupWindowAnimations() {
+        window.enterTransition = TransitionInflater.from(this)
+                .inflateTransition(R.transition.details_window_enter_transition)
+        window.returnTransition = TransitionInflater.from(this)
+                .inflateTransition(R.transition.details_window_return_transition)
+    }
+
     val sharedElementCallback = object : SharedElementCallback() {
         override fun onMapSharedElements(names: MutableList<String>, sharedElements: MutableMap<String, View>) {
+            log("onMapSharedElements $names, $sharedElements")
             if (isReturning) {
                 val sharedElement = currentDetailsFragment?.getAlbumImage()
                 if (sharedElement == null) {
@@ -77,6 +89,7 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     override fun finishAfterTransition() {
+        log("finishAfterTransition")
         isReturning = true
         val data = Intent()
                 .putExtra(EXTRA_STARTING_ALBUM_POSITION, startingPosition)
@@ -104,4 +117,6 @@ class DetailsActivity : AppCompatActivity() {
             currentDetailsFragment = obj as DetailsFragment
         }
     }
+
+    private fun log(msg: String) = Log.d("MT_DetailsActivity", msg)
 }
