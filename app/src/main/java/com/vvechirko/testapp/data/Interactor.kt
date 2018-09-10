@@ -1,7 +1,10 @@
 package com.vvechirko.testapp.data
 
 import com.google.gson.Gson
+import com.vvechirko.testapp.Background
 import com.vvechirko.testapp.TestApp
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import retrofit2.Call
@@ -52,14 +55,18 @@ object Interactor {
             }
 
             override fun enqueue(callback: Callback<RecipesResponse>) {
-                val json = TestApp.assets().open("api_responce.json")
-                        .bufferedReader().use { it.readText() }
 
-                callback.onResponse(this, Response.success(Gson()
-                        .fromJson(json, RecipesResponse::class.java)))
+
+                callback.onResponse(this, Response.success(getCached()))
             }
         }
     }
 
     fun getRecipe(id: String) = api.get(API_KEY, id)
+
+    fun getCached(): RecipesResponse {
+        val json = TestApp.assets().open("api_responce.json")
+                .bufferedReader().use { it.readText() }
+        return Gson().fromJson(json, RecipesResponse::class.java)
+    }
 }

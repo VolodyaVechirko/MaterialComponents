@@ -49,9 +49,14 @@ class ImageActivity : AppCompatActivity() {
         }
 
         toolbar.setNavigationOnClickListener { onBackPressed() }
-        Interactor.getRecipesCache().observe(
-            onSuccess = { showItem(it) }
-        )
+
+        // using coroutines
+        load { Interactor.getCached() } then { showItem(it) }
+
+        // using Call<T>.observe() extension
+//        Interactor.getRecipesCache().observe(
+//            onSuccess = { showItem(it) }
+//        )
     }
 
     private fun showItem(resp: RecipesResponse?) {
