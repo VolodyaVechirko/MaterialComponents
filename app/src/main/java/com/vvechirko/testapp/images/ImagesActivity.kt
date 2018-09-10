@@ -5,12 +5,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.vvechirko.testapp.R
+import com.vvechirko.testapp.*
 import com.vvechirko.testapp.data.RecipeModel
 import com.vvechirko.testapp.data.ResourceObserver
-import com.vvechirko.testapp.setNavigationAnim
-import com.vvechirko.testapp.statusBarColorRes
-import com.vvechirko.testapp.toast
 import kotlinx.android.synthetic.main.activity_images.*
 
 class ImagesActivity : AppCompatActivity() {
@@ -56,6 +53,10 @@ class ImagesActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
 
         subscribeViewModel()
+
+        fab.setOnClickListener {
+            ImageActivity.start(this, it.centerLocation())
+        }
     }
 
     private fun subscribeViewModel() {

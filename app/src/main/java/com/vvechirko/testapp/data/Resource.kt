@@ -2,9 +2,8 @@ package com.vvechirko.testapp.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.vvechirko.testapp.observe
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class Resource<T>(
 
@@ -50,14 +49,9 @@ class ResourceObserver<K, T : Resource<K>>(
 }
 
 fun <T> MutableLiveData<Resource<T>>.from(call: Call<T>) {
-    postValue(Resource.loading())
-    call.enqueue(object : Callback<T> {
-        override fun onFailure(call: Call<T>?, t: Throwable) {
-            postValue(Resource.error(t))
-        }
-
-        override fun onResponse(call: Call<T>?, response: Response<T>) {
-            postValue(Resource.success(response.body()))
-        }
-    })
+    call.observe(
+            onStart = { postValue(Resource.loading()) },
+            onSuccess = { postValue(Resource.success(it)) },
+            onError = { postValue(Resource.error(it)) }
+    )
 }

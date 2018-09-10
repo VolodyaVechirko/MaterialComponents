@@ -30,6 +30,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
+            android:name=".images.ImageActivity"
+            android:theme="@style/AppTheme.Translucent" />
+
+        <activity
             android:name=".transition.MusicActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
