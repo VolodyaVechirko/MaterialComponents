@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.vvechirko.testapp.*
+import com.vvechirko.testapp.data.Interactor
 import com.vvechirko.testapp.data.RecipeModel
 import com.vvechirko.testapp.data.ResourceObserver
 import kotlinx.android.synthetic.main.activity_images.*
@@ -61,11 +62,17 @@ class ImagesActivity : AppCompatActivity() {
 
     private fun subscribeViewModel() {
         viewModel.init()
-        viewModel.getData().observe(this, ResourceObserver(
+//        viewModel.data.observe(this, ResourceObserver(
+//                { data -> showProgress(false); adapter?.setData(data?.recipes ?: listOf()) },
+//                { error -> showProgress(false); toast(error) },
+//                { showProgress(true) }
+//        ))
+
+        viewModel.data.observeResource(this,
                 { data -> showProgress(false); adapter?.setData(data?.recipes ?: listOf()) },
                 { error -> showProgress(false); toast(error) },
                 { showProgress(true) }
-        ))
+        )
     }
 
     private fun notifyAppBar(state: Int) {

@@ -1,5 +1,6 @@
 package com.vvechirko.testapp.data
 
+import kotlinx.coroutines.experimental.Deferred
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -7,7 +8,9 @@ import retrofit2.http.Query
 interface Api {
 
     @GET("api/search")
-    fun search(): Call<RecipesResponse>
+    fun search(
+            @Query("key") key: String
+    ): Deferred<RecipesResponse>
 
     @GET("api/search")
     fun getAll(

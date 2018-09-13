@@ -1,15 +1,11 @@
 package com.vvechirko.testapp.data
 
 import com.google.gson.Gson
-import com.vvechirko.testapp.Background
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import com.vvechirko.testapp.TestApp
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.CompletableDeferred
+import kotlinx.coroutines.experimental.Deferred
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -21,45 +17,17 @@ object Interactor {
     val api = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(OkHttpClient())
-//            .addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(Api::class.java)
 
     fun getRecipes() = api.getAll(API_KEY)
 
-    fun getRecipesCache(): Call<RecipesResponse> {
-        return object : Call<RecipesResponse> {
-            override fun clone(): Call<RecipesResponse> {
-                TODO("not implemented")
-            }
-
-            override fun isCanceled(): Boolean {
-                TODO("not implemented")
-            }
-
-            override fun cancel() {
-                TODO("not implemented")
-            }
-
-            override fun execute(): Response<RecipesResponse> {
-                TODO("not implemented")
-            }
-
-            override fun request(): Request {
-                TODO("not implemented")
-            }
-
-            override fun isExecuted(): Boolean {
-                TODO("not implemented")
-            }
-
-            override fun enqueue(callback: Callback<RecipesResponse>) {
-
-
-                callback.onResponse(this, Response.success(getCached()))
-            }
-        }
+    fun getRecipesCache(): Deferred<RecipesResponse> {
+        val deferred = CompletableDeferred<RecipesResponse>()
+        deferred.complete(getCached())
+        return deferred
     }
 
     fun getRecipe(id: String) = api.get(API_KEY, id)
@@ -69,4 +37,6 @@ object Interactor {
                 .bufferedReader().use { it.readText() }
         return Gson().fromJson(json, RecipesResponse::class.java)
     }
+
+    fun getSearch() = api.search(API_KEY)
 }
