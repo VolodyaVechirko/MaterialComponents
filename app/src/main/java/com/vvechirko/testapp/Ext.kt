@@ -46,6 +46,14 @@ fun View.onPreDraw(action: () -> Unit) {
     })
 }
 
+var View.visible: Boolean
+    set(value) {
+        visibility = if (value) View.VISIBLE else View.GONE
+    }
+    get() {
+        return visibility == View.VISIBLE
+    }
+
 fun View.onGlobalLayout(action: () -> Unit) {
     viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {

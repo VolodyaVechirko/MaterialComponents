@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="AppCompatResource">
 
     <item
         android:id="@+id/action_upload"
         android:icon="@drawable/ic_cloud_upload_black_24dp"
         android:title="Upload"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"
+        tools:ignore="AppCompatResource" />
 
     <item
         android:id="@+id/action_remove"
@@ -17,5 +20,18 @@
     <item
         android:id="@+id/action_settings"
         android:title="Settings"
-        app:showAsAction="never" />
+        app:showAsAction="never">
+
+        <menu>
+            <item
+                android:id="@+id/action_1"
+                android:icon="@drawable/ic_person_add_24dp"
+                android:title="Action 1" />
+
+            <item
+                android:id="@+id/action_2"
+                android:icon="@drawable/ic_person_add_24dp"
+                android:title="Action 2" />
+        </menu>
+    </item>
 </menu>

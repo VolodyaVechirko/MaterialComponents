@@ -1,14 +1,14 @@
 package com.vvechirko.testapp.images
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.app.AppCompatActivity
 import com.vvechirko.testapp.*
-import com.vvechirko.testapp.data.Interactor
 import com.vvechirko.testapp.data.RecipeModel
-import com.vvechirko.testapp.data.ResourceObserver
 import kotlinx.android.synthetic.main.activity_images.*
 
 class ImagesActivity : AppCompatActivity() {
@@ -23,6 +23,9 @@ class ImagesActivity : AppCompatActivity() {
     private var adapter: Adapter? = null
 
     private val viewModel: ImagesViewModel by lazy { ImagesViewModel() }
+
+    private var appBarShow: Float = 0f
+    private var appBarHide: Float = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,10 +58,37 @@ class ImagesActivity : AppCompatActivity() {
 
         subscribeViewModel()
 
-        fab.setOnClickListener {
+        fabAdd.setOnClickListener {
             ImageActivity.start(this, it.centerLocation())
         }
+
+        fabShare.hide()
+        bottomAppBar.onPreDraw {
+            appBarHide = bottomAppBar.height.toFloat()
+            bottomAppBar.translationY = appBarHide
+        }
+
+        bottomAppBar.inflateMenu(R.menu.menu_selection)
+        bottomAppBar.setOnMenuItemClickListener {
+
+            true
+        }
     }
+
+//    override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo) {
+//        super.onCreateContextMenu(menu, v, menuInfo)
+//        menuInflater.inflate(R.menu.context_menu, menu)
+//    }
+//
+//    override fun onContextItemSelected(item: MenuItem): Boolean {
+//        val info = item.menuInfo as AdapterView.AdapterContextMenuInfo
+//        return when (item.itemId) {
+//            R.id.action_copy -> { toast("action_copy"); true }
+//            R.id.action_edit -> { toast("action_edit"); true }
+//            R.id.action_delete -> { toast("action_delete"); true }
+//            else -> super.onContextItemSelected(item)
+//        }
+//    }
 
     private fun subscribeViewModel() {
         viewModel.init()
@@ -86,21 +116,42 @@ class ImagesActivity : AppCompatActivity() {
                 toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp)
                 appBar.setBackgroundResource(R.color.colorPrimary)
                 window.statusBarColorRes(R.color.colorPrimaryDark)
+
+                hideBottomAppBar()
             }
             STATE_SELECT -> {
 //                toolbar.setNavigationAnim(R.drawable.animate_home)
                 toolbar.setNavigationIcon(R.drawable.ic_close_black_24dp)
                 appBar.setBackgroundResource(R.color.colorDark)
                 window.statusBarColorRes(R.color.colorDarkPrimaryDark)
+
+                showBottomAppBar()
             }
         }
         invalidateOptionsMenu()
     }
 
+    private fun showBottomAppBar() {
+        ObjectAnimator.ofFloat(bottomAppBar, "translationY", appBarHide, appBarShow)
+                .addInterpolator(AccelerateInterpolator())
+                .onStart { fabAdd.hide() }
+                .onEnd { fabShare.show() }
+                .start()
+    }
+
+    private fun hideBottomAppBar() {
+        ObjectAnimator.ofFloat(bottomAppBar, "translationY", appBarShow, appBarHide)
+                .addInterpolator(DecelerateInterpolator())
+                .onStart { fabShare.hide() }
+                .onEnd { fabAdd.show() }
+                .start()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         when (state) {
             STATE_NORMAL -> menuInflater.inflate(R.menu.menu_images, menu)
-            STATE_SELECT -> menuInflater.inflate(R.menu.menu_selection, menu)
+//            STATE_SELECT -> menuInflater.inflate(R.menu.menu_selection, menu)
+            STATE_SELECT -> menu.clear()
             STATE_SHEET -> menu.clear()
         }
         return super.onCreateOptionsMenu(menu)
@@ -127,6 +178,6 @@ class ImagesActivity : AppCompatActivity() {
     }
 
     fun showProgress(show: Boolean) {
-        progressBar.visibility = if (show) View.VISIBLE else View.GONE
+        progressBar.visible = show
     }
 }

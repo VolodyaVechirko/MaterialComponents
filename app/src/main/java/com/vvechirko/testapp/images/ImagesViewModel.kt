@@ -12,7 +12,7 @@ class ImagesViewModel : ViewModel() {
     fun init() {
         if (data.value == null) {
 //            data.adapt(Interactor.getRecipesCache())
-            data.adapt(Interactor.getSearch())
+            data.adapt(Interactor.getRecipesCache())
         }
     }
 }

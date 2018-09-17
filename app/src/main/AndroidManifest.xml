@@ -41,6 +41,9 @@
             android:name=".transition.DetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <activity
+            android:name=".ConstraintSetActivity" />
+
     </application>
 
 </manifest>
