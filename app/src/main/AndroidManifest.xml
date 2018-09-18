@@ -44,6 +44,12 @@
         <activity
             android:name=".ConstraintSetActivity" />
 
+        <activity
+            android:name=".ContextMenuActivity" />
+
+        <activity
+            android:name=".LoginActivity" />
+
     </application>
 
 </manifest>

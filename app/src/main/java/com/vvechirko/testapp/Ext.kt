@@ -6,9 +6,12 @@ import android.animation.TimeInterpolator
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Point
+import android.graphics.Rect
 import android.os.Build
 import android.transition.Transition
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.Window
@@ -61,6 +64,21 @@ fun View.onGlobalLayout(action: () -> Unit) {
             action.invoke()
         }
     })
+}
+
+fun Resources.toDp(value: Float): Float {
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, displayMetrics)
+}
+
+fun View.onSoftKeyboard(action: (visible: Boolean) -> Unit) {
+    val visibleFrame = Rect()
+    val softKeyboardHeight = resources.toDp(200f)
+
+    viewTreeObserver.addOnGlobalLayoutListener {
+        getWindowVisibleDisplayFrame(visibleFrame)
+        val isVisible = height - visibleFrame.height() > softKeyboardHeight
+        action.invoke(isVisible)
+    }
 }
 
 fun View.centerLocation(): Point {

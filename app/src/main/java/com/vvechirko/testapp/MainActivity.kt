@@ -18,5 +18,7 @@ class MainActivity : AppCompatActivity() {
         btnScroll.setOnClickListener { start<ScrollActivity>() }
         btnImages.setOnClickListener { start<ImagesActivity>() }
         btnConstraintSet.setOnClickListener { start<ConstraintSetActivity>() }
+        btnMenus.setOnClickListener { start<ContextMenuActivity>() }
+        btnLogin.setOnClickListener { start<LoginActivity>() }
     }
 }
