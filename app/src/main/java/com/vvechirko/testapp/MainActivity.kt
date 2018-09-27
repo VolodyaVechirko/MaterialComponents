@@ -20,5 +20,6 @@ class MainActivity : AppCompatActivity() {
         btnConstraintSet.setOnClickListener { start<ConstraintSetActivity>() }
         btnMenus.setOnClickListener { start<ContextMenuActivity>() }
         btnLogin.setOnClickListener { start<LoginActivity>() }
+        btnGrid.setOnClickListener { start<GridActivity>() }
     }
 }
