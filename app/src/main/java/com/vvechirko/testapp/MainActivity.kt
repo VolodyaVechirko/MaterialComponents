@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.transition.TransitionManager
 import com.vvechirko.testapp.images.ImagesActivity
+import com.vvechirko.testapp.pip.PIPActivity
 import com.vvechirko.testapp.transition.MusicActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -21,5 +22,6 @@ class MainActivity : AppCompatActivity() {
         btnMenus.setOnClickListener { start<ContextMenuActivity>() }
         btnLogin.setOnClickListener { start<LoginActivity>() }
         btnGrid.setOnClickListener { start<GridActivity>() }
+        btnPip.setOnClickListener { start<PIPActivity>() }
     }
 }
