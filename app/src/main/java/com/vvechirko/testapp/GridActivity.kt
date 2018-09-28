@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionManager
 
 class GridActivity : AppCompatActivity() {
 
@@ -30,9 +31,9 @@ class GridActivity : AppCompatActivity() {
         adapter = Adapter()
         val grid = GridLayoutManager(this, 1)
 
-        val animation = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_fall_down)
+//        val animation = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_fall_down)
         rv = RecyclerView(this)
-        rv.layoutAnimation = animation
+//        rv.layoutAnimation = animation
         rv.layoutManager = grid
         rv.adapter = adapter
         spanCount(SPANS)
@@ -57,6 +58,7 @@ class GridActivity : AppCompatActivity() {
 
     fun spanCount(span: Int) {
         with(rv.layoutManager as GridLayoutManager) {
+//            TransitionManager.beginDelayedTransition(rv)
             spanCount = span
             spanSizeLookup = adapter.spanSizeLookup(span)
         }
@@ -153,6 +155,7 @@ class Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 //  =========================================
 
     fun view1(context: Context) = TextView(context).apply {
+
         minimumHeight = 200
         setBackgroundColor(Color.BLUE)
         gravity = Gravity.CENTER
