@@ -24,6 +24,10 @@ class BottomSheet : BottomSheetDialogFragment() {
         return BottomSheetDialog(context!!, theme).apply {
             setContentView(R.layout.bottom_sheet)
             show()
+        }.apply {
+            setOnShowListener {
+                
+            }
         }
     }
 

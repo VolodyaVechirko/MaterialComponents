@@ -14,6 +14,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         editText.setOnEditorActionListener { v, actionId, event ->
             Log.d("EditorAction", "actionId $actionId, event $event")
